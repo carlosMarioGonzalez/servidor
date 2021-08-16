@@ -1,14 +1,25 @@
 # example_consumer.py
 import pika, os, csv
+from datetime import datetime
+
+from influxdb_client import InfluxDBClient, Point, WritePrecision
+from influxdb_client.client.write_api import SYNCHRONOUS
+
+# You can generate a Token from the "Tokens Tab" in the UI
+token = "MlUoRzyipVkKqyGSjil7696heOcs8s4JDI_IVNWKqvZ5_eVAbaht16Fwwm46oJN0PRUQnu9-L7W0qhpgoAjNFA=="
+org = "taller 3"
+bucket = "dispositivo1"
+
+client = InfluxDBClient(url="http://52.234.212.255:8086", token=token)
 
 
 def process_function(msg):
   mesage = msg.decode("utf-8")
   print(mesage)
-  #Aqui va el codigo para enviar a la base de datos.
-  #
-  #
-  #
+  write_api = client.write_api(write_options=SYNCHRONOUS)
+
+  data = "mem,host=host1 used_percent=" + mesage
+  write_api.write(bucket, org, data)
   return
 
 while 1:
